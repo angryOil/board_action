@@ -1,12 +1,13 @@
 package main
 
 import (
+	"board_action/cmd/app/handler"
+	"board_action/internal/controller"
+	"board_action/internal/repository"
+	"board_action/internal/repository/infla"
+	"board_action/internal/service"
 	"github.com/gorilla/mux"
-	"member_role/cmd/app/handler"
-	"member_role/internal/controller"
-	"member_role/internal/repository"
-	"member_role/internal/repository/infla"
-	"member_role/internal/service"
+	"log"
 	"net/http"
 )
 
@@ -14,8 +15,11 @@ func main() {
 	r := mux.NewRouter()
 	h := getHandler()
 
-	r.PathPrefix("/member-roles").Handler(h)
-	http.ListenAndServe(":8087", r)
+	r.PathPrefix("/board-actions").Handler(h)
+	err := http.ListenAndServe(":8088", r)
+	if err != nil {
+		log.Println("server listen err: ", err)
+	}
 }
 
 func getHandler() http.Handler {

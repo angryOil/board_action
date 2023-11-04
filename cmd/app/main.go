@@ -18,7 +18,7 @@ func main() {
 	r.PathPrefix("/board-actions").Handler(h)
 	err := http.ListenAndServe(":8088", r)
 	if err != nil {
-		log.Println("server listen err: ", err)
+		log.Panic("server listen err: ", err)
 	}
 }
 

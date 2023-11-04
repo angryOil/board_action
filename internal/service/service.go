@@ -29,6 +29,35 @@ func (s Service) GetInfo(ctx context.Context, cafeId int, typeId int) (domain.Bo
 	return d, err
 }
 
+func (s Service) Patch(ctx context.Context, reqD domain.BoardAction) error {
+	err := validFiled(reqD)
+	if err != nil {
+		return err
+	}
+	err = s.repo.Patch(ctx, reqD.CafeId, reqD.BoardTypeId,
+		func(domains []domain.BoardAction) (domain.BoardAction, error) {
+			if len(domains) == 0 {
+				return domain.BoardAction{}, errors.New("no rows")
+			}
+			return domains[0], nil
+		},
+		func(oldD domain.BoardAction) domain.BoardAction {
+			return domain.BoardAction{
+				Id:          oldD.Id,
+				CafeId:      oldD.CafeId,
+				BoardTypeId: oldD.BoardTypeId,
+				ReadRoles:   reqD.ReadRoles,
+				CreateRoles: reqD.CreateRoles,
+				UpdateRoles: reqD.UpdateRoles,
+				UpdateAble:  reqD.UpdateAble,
+				DeleteRoles: reqD.DeleteRoles,
+				CreatedAt:   oldD.CreatedAt,
+			}
+		},
+	)
+	return err
+}
+
 func validFiled(d domain.BoardAction) error {
 	if d.BoardTypeId == 0 {
 		return errors.New("invalid cafe type id")

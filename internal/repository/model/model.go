@@ -47,3 +47,11 @@ func (m BoardAction) ToDomain() domain.BoardAction {
 		CreatedAt:   m.CreatedAt,
 	}
 }
+
+func ToDomainList(models []BoardAction) []domain.BoardAction {
+	results := make([]domain.BoardAction, len(models))
+	for i, m := range models {
+		results[i] = m.ToDomain()
+	}
+	return results
+}

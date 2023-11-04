@@ -25,6 +25,12 @@ func (c Controller) GetInfo(ctx context.Context, cafeId int, boardTypeId int) (r
 	return res.ToDto(d), err
 }
 
+func (c Controller) Patch(ctx context.Context, cafeId int, typeId int, rDto req.PatchDto) error {
+	d := rDto.ToDomain(cafeId, typeId)
+	err := c.s.Patch(ctx, d)
+	return err
+}
+
 func NewController(s service.Service) Controller {
 	return Controller{s: s}
 }

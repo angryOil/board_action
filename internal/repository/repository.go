@@ -40,6 +40,30 @@ func (r Repository) GetByCafeIdTypeId(ctx context.Context, cafeId int, typeId in
 	return models[0].ToDomain(), nil
 }
 
+func (r Repository) Patch(ctx context.Context, cafeId int, typeId int, validFunc func(domains []domain.BoardAction) (domain.BoardAction, error), mergeFunc func(oldD domain.BoardAction) domain.BoardAction) error {
+	var models []model.BoardAction
+	err := r.db.NewSelect().Model(&models).Where("cafe_id = ? and board_type_id =?", cafeId, typeId).Scan(ctx)
+	if err != nil {
+		log.Println("Patch NewSelect err: ", err)
+		return errors.New("internal server error")
+	}
+	validDomain, err := validFunc(model.ToDomainList(models))
+	if err != nil {
+		return err
+	}
+	mergedDomain := mergeFunc(validDomain)
+	mergedModel := model.ToModel(mergedDomain)
+
+	_, err = r.db.NewInsert().Model(&mergedModel).
+		On("CONFLICT (id) DO UPDATE").Exec(ctx)
+
+	if err != nil {
+		log.Println("Patch NewInsert err: ", err)
+		return errors.New("internal server error")
+	}
+	return nil
+}
+
 func NewRepository(db bun.IDB) Repository {
 	return Repository{db: db}
 }

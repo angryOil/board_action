@@ -64,6 +64,16 @@ func (r Repository) Patch(ctx context.Context, cafeId int, typeId int, validFunc
 	return nil
 }
 
+func (r Repository) Delete(ctx context.Context, cafeId int, typeId int, id int) error {
+	var m model.BoardAction
+	_, err := r.db.NewDelete().Model(&m).Where("cafe_id = ? and board_type_id = ? and id = ?", cafeId, typeId, id).Exec(ctx)
+	if err != nil {
+		log.Println("Delete NewDelete err: ", err)
+		return errors.New("internal server error")
+	}
+	return err
+}
+
 func NewRepository(db bun.IDB) Repository {
 	return Repository{db: db}
 }

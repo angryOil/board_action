@@ -58,6 +58,11 @@ func (s Service) Patch(ctx context.Context, reqD domain.BoardAction) error {
 	return err
 }
 
+func (s Service) Delete(ctx context.Context, cafeId int, typeId int, id int) error {
+	err := s.repo.Delete(ctx, cafeId, typeId, id)
+	return err
+}
+
 func validFiled(d domain.BoardAction) error {
 	if d.BoardTypeId == 0 {
 		return errors.New("invalid cafe type id")

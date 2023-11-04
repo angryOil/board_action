@@ -126,5 +126,25 @@ func (h Handler) patch(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) delete(w http.ResponseWriter, r *http.Request) {
-
+	vars := mux.Vars(r)
+	cafeId, err := strconv.Atoi(vars["cafeId"])
+	if err != nil {
+		http.Error(w, "invalid cafe id", http.StatusBadRequest)
+		return
+	}
+	boardTypeId, err := strconv.Atoi(vars["boardTypeId"])
+	if err != nil {
+		http.Error(w, "invalid board type id", http.StatusBadRequest)
+		return
+	}
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "invalid board action id", http.StatusBadRequest)
+		return
+	}
+	err = h.c.Delete(r.Context(), cafeId, boardTypeId, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

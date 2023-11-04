@@ -31,6 +31,11 @@ func (c Controller) Patch(ctx context.Context, cafeId int, typeId int, rDto req.
 	return err
 }
 
+func (c Controller) Delete(ctx context.Context, cafeId int, typeId int, id int) error {
+	err := c.s.Delete(ctx, cafeId, typeId, id)
+	return err
+}
+
 func NewController(s service.Service) Controller {
 	return Controller{s: s}
 }

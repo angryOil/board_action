@@ -5,6 +5,7 @@ import (
 	"board_action/internal/controller/req"
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,7 +18,9 @@ type Handler struct {
 func NewHandler(c controller.Controller) http.Handler {
 	r := mux.NewRouter()
 	h := Handler{c: c}
+	// 조회
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}", h.getInfo).Methods(http.MethodGet)
+	// 나머진 카페 주인만 가능함
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}", h.create).Methods(http.MethodPost)
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}", h.patch).Methods(http.MethodPatch)
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}/{id:[0-9]+}", h.delete).Methods(http.MethodDelete)
@@ -25,7 +28,32 @@ func NewHandler(c controller.Controller) http.Handler {
 }
 
 func (h Handler) getInfo(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	cafeId, err := strconv.Atoi(vars["cafeId"])
+	if err != nil {
+		http.Error(w, "invalid cafe id", http.StatusBadRequest)
+		return
+	}
+	boardTypeId, err := strconv.Atoi(vars["boardTypeId"])
+	if err != nil {
+		http.Error(w, "invalid board type id", http.StatusBadRequest)
+		return
+	}
 
+	d, err := h.c.GetInfo(r.Context(), cafeId, boardTypeId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data, err := json.Marshal(d)
+	if err != nil {
+		log.Println("getInfo json.Marshal err: ", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Add("Content-Type", "application/json")
+	w.Write(data)
 }
 
 func (h Handler) create(w http.ResponseWriter, r *http.Request) {

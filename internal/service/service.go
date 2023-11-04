@@ -24,8 +24,13 @@ func (s Service) Create(ctx context.Context, d domain.BoardAction) error {
 	return err
 }
 
+func (s Service) GetInfo(ctx context.Context, cafeId int, typeId int) (domain.BoardAction, error) {
+	d, err := s.repo.GetByCafeIdTypeId(ctx, cafeId, typeId)
+	return d, err
+}
+
 func validFiled(d domain.BoardAction) error {
-	if d.CafeTypeId == 0 {
+	if d.BoardTypeId == 0 {
 		return errors.New("invalid cafe type id")
 	}
 	if d.CafeId == 0 {

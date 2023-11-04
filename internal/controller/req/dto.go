@@ -13,10 +13,10 @@ type CreateDto struct {
 	DeleteRoles string `json:"delete_roles"`
 }
 
-func (d CreateDto) ToDomain(cafeId, cafeTypeId int) domain.BoardAction {
+func (d CreateDto) ToDomain(cafeId, boardTypeId int) domain.BoardAction {
 	return domain.BoardAction{
 		CafeId:      cafeId,
-		CafeTypeId:  cafeTypeId,
+		BoardTypeId: boardTypeId,
 		ReadRoles:   d.ReadRoles,
 		CreateRoles: d.CreateRoles,
 		UpdateRoles: d.UpdateRoles,

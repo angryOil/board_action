@@ -22,21 +22,28 @@ func NewHandler(c controller.Controller) http.Handler {
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}", h.getInfo).Methods(http.MethodGet)
 	// 나머진 카페 주인만 가능함
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}", h.create).Methods(http.MethodPost)
-	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}", h.patch).Methods(http.MethodPatch)
+	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}/{id:[0-9]+}", h.patch).Methods(http.MethodPatch)
 	r.HandleFunc("/board-actions/{cafeId:[0-9]+}/{boardTypeId:[0-9]+}/{id:[0-9]+}", h.delete).Methods(http.MethodDelete)
 	return r
 }
+
+const (
+	InternalServerError = "internal server error"
+	InvalidCafeId       = "invalid cafe id"
+	InvalidBoardTypeId  = "invalid board type id"
+	InvalidId           = "invalid id"
+)
 
 func (h Handler) getInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cafeId, err := strconv.Atoi(vars["cafeId"])
 	if err != nil {
-		http.Error(w, "invalid cafe id", http.StatusBadRequest)
+		http.Error(w, InvalidCafeId, http.StatusBadRequest)
 		return
 	}
 	boardTypeId, err := strconv.Atoi(vars["boardTypeId"])
 	if err != nil {
-		http.Error(w, "invalid board type id", http.StatusBadRequest)
+		http.Error(w, InvalidBoardTypeId, http.StatusBadRequest)
 		return
 	}
 
@@ -49,7 +56,7 @@ func (h Handler) getInfo(w http.ResponseWriter, r *http.Request) {
 	data, err := json.Marshal(d)
 	if err != nil {
 		log.Println("getInfo json.Marshal err: ", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
 	w.Header().Add("Content-Type", "application/json")
@@ -60,12 +67,12 @@ func (h Handler) create(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cafeId, err := strconv.Atoi(vars["cafeId"])
 	if err != nil {
-		http.Error(w, "invalid cafe id", http.StatusBadRequest)
+		http.Error(w, InvalidCafeId, http.StatusBadRequest)
 		return
 	}
 	boardTypeId, err := strconv.Atoi(vars["boardTypeId"])
 	if err != nil {
-		http.Error(w, "invalid board type id", http.StatusBadRequest)
+		http.Error(w, InvalidBoardTypeId, http.StatusBadRequest)
 		return
 	}
 	var d req.CreateDto
@@ -93,14 +100,19 @@ func (h Handler) create(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) patch(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, InvalidId, http.StatusBadRequest)
+		return
+	}
 	cafeId, err := strconv.Atoi(vars["cafeId"])
 	if err != nil {
-		http.Error(w, "invalid cafe id", http.StatusBadRequest)
+		http.Error(w, InvalidCafeId, http.StatusBadRequest)
 		return
 	}
 	boardTypeId, err := strconv.Atoi(vars["boardTypeId"])
 	if err != nil {
-		http.Error(w, "invalid board type id", http.StatusBadRequest)
+		http.Error(w, InvalidBoardTypeId, http.StatusBadRequest)
 		return
 	}
 	var d req.PatchDto
@@ -110,7 +122,7 @@ func (h Handler) patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.c.Patch(r.Context(), cafeId, boardTypeId, d)
+	err = h.c.Patch(r.Context(), id, cafeId, boardTypeId, d)
 	if err != nil {
 		if strings.Contains(err.Error(), "no row") {
 			http.Error(w, err.Error(), http.StatusNotFound)
@@ -129,17 +141,17 @@ func (h Handler) delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cafeId, err := strconv.Atoi(vars["cafeId"])
 	if err != nil {
-		http.Error(w, "invalid cafe id", http.StatusBadRequest)
+		http.Error(w, InvalidCafeId, http.StatusBadRequest)
 		return
 	}
 	boardTypeId, err := strconv.Atoi(vars["boardTypeId"])
 	if err != nil {
-		http.Error(w, "invalid board type id", http.StatusBadRequest)
+		http.Error(w, InvalidBoardTypeId, http.StatusBadRequest)
 		return
 	}
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		http.Error(w, "invalid board action id", http.StatusBadRequest)
+		http.Error(w, InvalidId, http.StatusBadRequest)
 		return
 	}
 	err = h.c.Delete(r.Context(), cafeId, boardTypeId, id)

@@ -2,6 +2,7 @@ package model
 
 import (
 	"board_action/internal/domain"
+	"board_action/internal/repository/req"
 	"github.com/uptrace/bun"
 	"time"
 )
@@ -20,38 +21,50 @@ type BoardAction struct {
 	CreatedAt   time.Time `bun:"created_at"`
 }
 
-func ToModel(d domain.BoardAction) BoardAction {
+func ToCreateModel(c req.Create) BoardAction {
 	return BoardAction{
-		Id:          d.Id,
-		CafeId:      d.CafeId,
-		BoardTypeId: d.BoardTypeId,
-		ReadRoles:   d.ReadRoles,
-		CreateRoles: d.CreateRoles,
-		UpdateRoles: d.UpdateRoles,
-		UpdateAble:  d.UpdateAble,
-		DeleteRoles: d.DeleteRoles,
-		CreatedAt:   d.CreatedAt,
+		CafeId:      c.CafeId,
+		BoardTypeId: c.BoardTypeId,
+		ReadRoles:   c.ReadRoles,
+		CreateRoles: c.CreateRoles,
+		UpdateRoles: c.UpdateRoles,
+		UpdateAble:  c.UpdateAble,
+		DeleteRoles: c.DeleteRoles,
+		CreatedAt:   c.CreatedAt,
 	}
 }
 
-func (m BoardAction) ToDomain() domain.BoardAction {
-	return domain.BoardAction{
-		Id:          m.Id,
-		CafeId:      m.CafeId,
-		BoardTypeId: m.BoardTypeId,
-		ReadRoles:   m.ReadRoles,
-		CreateRoles: m.CreateRoles,
-		UpdateRoles: m.UpdateRoles,
-		UpdateAble:  m.UpdateAble,
-		DeleteRoles: m.DeleteRoles,
-		CreatedAt:   m.CreatedAt,
+func ToUpdateModel(u req.Update) BoardAction {
+	return BoardAction{
+		CafeId:      u.CafeId,
+		BoardTypeId: u.BoardTypeId,
+		ReadRoles:   u.ReadRoles,
+		CreateRoles: u.CreateRoles,
+		UpdateRoles: u.UpdateRoles,
+		UpdateAble:  u.UpdateAble,
+		DeleteRoles: u.DeleteRoles,
+		CreatedAt:   u.CreatedAt,
 	}
+}
+
+func (b BoardAction) ToDomain() domain.BoardAction {
+	return domain.NewBoardActionBuilder().
+		Id(b.Id).
+		CafeId(b.CafeId).
+		BoardTypeId(b.BoardTypeId).
+		ReadRoles(b.ReadRoles).
+		CreateRoles(b.CreateRoles).
+		UpdateRoles(b.UpdateRoles).
+		UpdateAble(b.UpdateAble).
+		DeleteRoles(b.DeleteRoles).
+		CreatedAt(b.CreatedAt).
+		Build()
 }
 
 func ToDomainList(models []BoardAction) []domain.BoardAction {
-	results := make([]domain.BoardAction, len(models))
+	result := make([]domain.BoardAction, len(models))
 	for i, m := range models {
-		results[i] = m.ToDomain()
+		result[i] = m.ToDomain()
 	}
-	return results
+	return result
 }

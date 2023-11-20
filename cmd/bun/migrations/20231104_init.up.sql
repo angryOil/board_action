@@ -9,9 +9,6 @@ CREATE TABLE "public"."board_action"
     board_type_id int     not null,
     read_roles   varchar not null,
     create_roles varchar not null,
-    update_roles varchar not null,
-    update_able  bool default false,
-    delete_roles varchar not null,
     created_at   timestamptz
 );
 

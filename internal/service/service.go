@@ -22,17 +22,13 @@ func NewService(repo repository.Repository) Service {
 
 func (s Service) Create(ctx context.Context, d req.Create) error {
 	cafeId, boardTypeId := d.CafeId, d.BoardTypeId
-	readRoles, createRoles, updateRoles, deleteRoles := d.ReadRoles, d.CreateRoles, d.UpdateRoles, d.DeleteRoles
-	updateAble := d.UpdateAble
+	readRoles, createRoles := d.ReadRoles, d.CreateRoles
 	createdAt := time.Now()
 	err := domain.NewBoardActionBuilder().
 		CafeId(cafeId).
 		BoardTypeId(boardTypeId).
 		ReadRoles(readRoles).
 		CreateRoles(createRoles).
-		UpdateRoles(updateRoles).
-		UpdateAble(updateAble).
-		DeleteRoles(deleteRoles).
 		CreatedAt(createdAt).
 		Build().ValidCreate()
 	if err != nil {
@@ -44,9 +40,6 @@ func (s Service) Create(ctx context.Context, d req.Create) error {
 		BoardTypeId: boardTypeId,
 		ReadRoles:   readRoles,
 		CreateRoles: createRoles,
-		UpdateRoles: updateRoles,
-		UpdateAble:  updateAble,
-		DeleteRoles: deleteRoles,
 		CreatedAt:   createdAt,
 	})
 	return err
@@ -61,9 +54,6 @@ func (s Service) GetInfo(ctx context.Context, cafeId int, typeId int) (res.GetBy
 		BoardTypeId: v.BoardTypeId,
 		ReadRoles:   v.ReadRoles,
 		CreateRoles: v.CreateRoles,
-		UpdateRoles: v.UpdateRoles,
-		UpdateAble:  v.UpdateAble,
-		DeleteRoles: v.DeleteRoles,
 	}, err
 }
 
@@ -77,9 +67,6 @@ func (s Service) Patch(ctx context.Context, u req.Update) error {
 		BoardTypeId(boardTypeId).
 		ReadRoles(readRoles).
 		CreateRoles(createRoles).
-		UpdateRoles(updateRoles).
-		UpdateAble(updateAble).
-		DeleteRoles(deleteRoles).
 		Build().ValidUpdate()
 	if err != nil {
 		return err

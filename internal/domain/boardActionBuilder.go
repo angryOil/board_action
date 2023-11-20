@@ -14,9 +14,6 @@ type BoardActionBuilder interface {
 	BoardTypeId(boardTypeId int) BoardActionBuilder
 	ReadRoles(readRoles string) BoardActionBuilder
 	CreateRoles(createRoles string) BoardActionBuilder
-	UpdateRoles(updateRoles string) BoardActionBuilder
-	UpdateAble(updateAble bool) BoardActionBuilder
-	DeleteRoles(deleteRoles string) BoardActionBuilder
 	CreatedAt(createdAt time.Time) BoardActionBuilder
 	Build() BoardAction
 }
@@ -27,9 +24,6 @@ type boardActionBuilder struct {
 	boardTypeId int
 	readRoles   string
 	createRoles string
-	updateRoles string
-	updateAble  bool
-	deleteRoles string
 	createdAt   time.Time
 }
 
@@ -58,21 +52,6 @@ func (b *boardActionBuilder) CreateRoles(createRoles string) BoardActionBuilder 
 	return b
 }
 
-func (b *boardActionBuilder) UpdateRoles(updateRoles string) BoardActionBuilder {
-	b.updateRoles = updateRoles
-	return b
-}
-
-func (b *boardActionBuilder) UpdateAble(updateAble bool) BoardActionBuilder {
-	b.updateAble = updateAble
-	return b
-}
-
-func (b *boardActionBuilder) DeleteRoles(deleteRoles string) BoardActionBuilder {
-	b.deleteRoles = deleteRoles
-	return b
-}
-
 func (b *boardActionBuilder) CreatedAt(createdAt time.Time) BoardActionBuilder {
 	b.createdAt = createdAt
 	return b
@@ -85,9 +64,6 @@ func (b *boardActionBuilder) Build() BoardAction {
 		boardTypeId: b.boardTypeId,
 		readRoles:   b.readRoles,
 		createRoles: b.createRoles,
-		updateRoles: b.updateRoles,
-		updateAble:  b.updateAble,
-		deleteRoles: b.deleteRoles,
 		createdAt:   b.createdAt,
 	}
 }

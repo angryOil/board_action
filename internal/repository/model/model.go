@@ -15,9 +15,6 @@ type BoardAction struct {
 	BoardTypeId int       `bun:"board_type_id,notnull"`
 	ReadRoles   string    `bun:"read_roles,notnull"`
 	CreateRoles string    `bun:"create_roles,notnull"`
-	UpdateRoles string    `bun:"update_roles,notnull"`
-	UpdateAble  bool      `bun:"update_able,notnull"`
-	DeleteRoles string    `bun:"delete_roles,notnull"`
 	CreatedAt   time.Time `bun:"created_at"`
 }
 
@@ -27,9 +24,6 @@ func ToCreateModel(c req.Create) BoardAction {
 		BoardTypeId: c.BoardTypeId,
 		ReadRoles:   c.ReadRoles,
 		CreateRoles: c.CreateRoles,
-		UpdateRoles: c.UpdateRoles,
-		UpdateAble:  c.UpdateAble,
-		DeleteRoles: c.DeleteRoles,
 		CreatedAt:   c.CreatedAt,
 	}
 }
@@ -40,9 +34,6 @@ func ToUpdateModel(u req.Update) BoardAction {
 		BoardTypeId: u.BoardTypeId,
 		ReadRoles:   u.ReadRoles,
 		CreateRoles: u.CreateRoles,
-		UpdateRoles: u.UpdateRoles,
-		UpdateAble:  u.UpdateAble,
-		DeleteRoles: u.DeleteRoles,
 		CreatedAt:   u.CreatedAt,
 	}
 }
@@ -54,9 +45,6 @@ func (b BoardAction) ToDomain() domain.BoardAction {
 		BoardTypeId(b.BoardTypeId).
 		ReadRoles(b.ReadRoles).
 		CreateRoles(b.CreateRoles).
-		UpdateRoles(b.UpdateRoles).
-		UpdateAble(b.UpdateAble).
-		DeleteRoles(b.DeleteRoles).
 		CreatedAt(b.CreatedAt).
 		Build()
 }

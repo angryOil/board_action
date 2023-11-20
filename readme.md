@@ -22,7 +22,7 @@ cafe_id 와 cafe_type_id 를 유니크 키로 가집니다.
 ## entity 구조
 
 ```text
-board_action{ cafe_id + member_id = unique key 
+board_action{ cafe_id + cafe_type_id = unique key 
     id           SERIAL PRIMARY KEY,
     cafe_id      int     ,
     cafe_type_id int     ,

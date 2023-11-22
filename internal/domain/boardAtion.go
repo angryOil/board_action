@@ -23,9 +23,6 @@ type boardAction struct {
 	boardTypeId int
 	readRoles   string
 	createRoles string
-	updateRoles string
-	updateAble  bool
-	deleteRoles string
 	createdAt   time.Time
 }
 
@@ -36,9 +33,6 @@ func (b *boardAction) ToUpdate() vo.Update {
 		BoardTypeId: b.boardTypeId,
 		ReadRoles:   b.readRoles,
 		CreateRoles: b.createRoles,
-		UpdateRoles: b.updateRoles,
-		UpdateAble:  b.updateAble,
-		DeleteRoles: b.deleteRoles,
 		CreatedAt:   b.createdAt,
 	}
 }
@@ -75,9 +69,6 @@ func (b *boardAction) ValidUpdate() error {
 func (b *boardAction) Update(readRoles, createRoles, updateRoles, deleteRoles string, updateAble bool) BoardAction {
 	b.readRoles = readRoles
 	b.createRoles = createRoles
-	b.updateRoles = updateRoles
-	b.deleteRoles = deleteRoles
-	b.updateAble = updateAble
 	return b
 }
 
@@ -88,8 +79,5 @@ func (b *boardAction) ToInfo() vo.Info {
 		BoardTypeId: b.boardTypeId,
 		ReadRoles:   b.readRoles,
 		CreateRoles: b.createRoles,
-		UpdateRoles: b.updateRoles,
-		UpdateAble:  b.updateAble,
-		DeleteRoles: b.deleteRoles,
 	}
 }

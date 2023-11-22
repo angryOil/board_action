@@ -83,9 +83,6 @@ func (r Repository) Patch(ctx context.Context, id int,
 		BoardTypeId: mergedV.BoardTypeId,
 		ReadRoles:   mergedV.ReadRoles,
 		CreateRoles: mergedV.CreateRoles,
-		UpdateRoles: mergedV.UpdateRoles,
-		UpdateAble:  mergedV.UpdateAble,
-		DeleteRoles: mergedV.DeleteRoles,
 		CreatedAt:   mergedV.CreatedAt,
 	})
 
